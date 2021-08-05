@@ -4,7 +4,7 @@ To test out docker swarm features or learn docker swarm, you can use below websi
 which allows you to run a swarm cluster on cloud for free (for 4 hours). All you need is a docker
 account. 
 
-[Click here to open playground](#https://labs.play-with-docker.com/)
+[Click here to open playground](https://labs.play-with-docker.com/)
 
 You can also use swarm visualizer while you are learning docker swarm to look at swarm cluster through a GUI.
 Command to start swarm visualizer:
