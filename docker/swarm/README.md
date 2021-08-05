@@ -17,6 +17,7 @@ Command to start swarm visualizer:
 - [Manager](#Manager)
 - [Worker](#Worker)
 - [Routing Mesh](#Routing-mesh)
+- [Stacks](#Stacks)
 - [Commands](#Commands)
 
 ### General
@@ -37,7 +38,7 @@ Command to start swarm visualizer:
 
 ### Worker
 
-- 
+- Hosts application workload.
 
 
 ### Routing Mesh
@@ -51,6 +52,16 @@ response from a container running on another worker node.
 - This is Layer 3 Load balancing done by swarm.
 - Docker Enterprise edition comes with Layer 4 Load balancing available to be used.
 
+### Stacks
+
+Although all services can be deployed individually by running ```docker service``` commands but
+there is another way to deploy or configure interdependent services through stacks.
+
+- stacks use docker-compose files as inputs.
+- these docker-compose files should be of version 3 or higher.
+- docker-compose files have different sections for build and deploy. So, for local development/testing
+through docker-compose, docker will skip/neglect deploy: section and similarly docker stack deploy command in production will avoid the build section.
+
 ### Commands
 
 All commands listed below use ```--detach False``` by default, so these commands
@@ -59,6 +70,7 @@ wait synchronously until all tasks have been executed.
 - If you are automating stuff with swarm, use ```--detach True``` flag
 - All these commands can only be executed at manager node.
 
+#### Docker service commands
 - To get list of services running in a swarm cluster:
     - ```docker service ls ```
 - To check individual containers running in swarm:
@@ -70,4 +82,12 @@ wait synchronously until all tasks have been executed.
     - e.g: ```docker service update nginx --replicas 3```
 - To get the join token for adding a node as manager:
     - ```docker swarm join-token manager```
-- 
+
+#### Docker stack commands:
+
+- To get list of all stacks deployed to swarm:
+    - ```docker stack ls```
+- To check list of all services running in a stack:
+    - ```docker stack services <service-name>```
+- To check health of all tasks/containers running in a stack and where they are running:
+    - ```docker stack ps <service-name>```
