@@ -66,11 +66,22 @@ through docker-compose, docker will skip/neglect deploy: section and similarly d
 
 All commands listed below use ```--detach False``` by default, so these commands
 wait synchronously until all tasks have been executed. 
-```Notes:``` 
+
+`Notes`:
+
 - If you are automating stuff with swarm, use ```--detach True``` flag
 - All these commands can only be executed at manager node.
 
 #### Docker service commands
+
+- To create a service using the most basic options:
+    - ```docker service create -p 8080:80 --name web nginx:1.13.7```
+- To bypass swarm routing mesh:
+    - ```docker service create --name web --publish published=8080,target=80,protocol=tcp,mode=host --mode global nginx:1.13.7```
+- To scale a service:
+    - ```docker service scale web=5```
+- To change/update image used by a service:
+    - ```docker service update --image nginx:1.13.6 web```
 - To get list of services running in a swarm cluster:
     - ```docker service ls ```
 - To check individual containers running in swarm:
