@@ -18,6 +18,7 @@ Command to start swarm visualizer:
 - [Worker](#Worker)
 - [Routing Mesh](#Routing-mesh)
 - [Stacks](#Stacks)
+- [Container Placement](#container-placement)
 - [Commands](#Commands)
 
 ### General
@@ -61,6 +62,17 @@ there is another way to deploy or configure interdependent services through stac
 - these docker-compose files should be of version 3 or higher.
 - docker-compose files have different sections for build and deploy. So, for local development/testing
 through docker-compose, docker will skip/neglect deploy: section and similarly docker stack deploy command in production will avoid the build section.
+
+### Container placement
+
+- By default a swarm service gets spread out evenly across worker nodes and tries to use the least-used
+node for a task/container.
+- There are other ways we can control this placement, which are:
+    - We can label nodes(metadata) and have service constraints which will target nodes based on these labels.
+    - Service modes (replicated|global) 
+    - Placement preferences (soft requirement), useful for spreading out containers based on zones etc.
+    - We can change node's availability for new tasks i.e. we can mark a node unavailable for new tasks based on a condition.
+    - Resource requirements: We can create a service by specifiying its cpu/memory requirements and the scheduler will know where to place the tasks of that service.
 
 ### Commands
 
