@@ -67,7 +67,7 @@ there is another way to deploy or configure interdependent services through stac
 - these docker-compose files should be of version 3 or higher.
 - docker-compose files have different sections for build and deploy. So, for local development/testing
 through docker-compose, docker will skip/neglect deploy: section and similarly docker stack deploy command in production will avoid the build section.
-- Look at [service-constraints-example.yaml](service-constraints-example.yaml) as an example of how to add constraints to a service using a stack file.
+- Look at [service-constraint-example.yaml](service-constraint-example.yaml) as an example of how to add constraints to a service using a stack file.
 
 ### Container placement
 
