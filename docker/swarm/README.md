@@ -20,11 +20,14 @@ Command to start swarm visualizer:
 - [Routing Mesh](#Routing-mesh)
 - [Stacks](#Stacks)
 - [Container Placement](#container-placement)
+  - [Service Constraints](#service-constraints)
+  - [Placement Preferences](#placement-preferences)
+- [Service Modes](#service-modes)
 - [Commands](#Commands)
 
 ### TODO
 
-- [ ] Check if swarm visualizer is needed to keep an eye on cluster.
+- [ ] Check if swarm visualizer is needed to keep an eye on cluster. (dockersamples/visualizer:latest)
 
 ### General
 
@@ -51,6 +54,7 @@ Command to start swarm visualizer:
 
 - Routing mesh creates a VIP for each service wich is available for all worker 
 nodes and forwards traffic to all nodes hosting a specific service.
+
 ![Routing mesh](images/swarm-mesh.png)
 
 - Even if you hit your application port using localhost on a worker node, it might return
@@ -85,6 +89,7 @@ node for a task/container.
 - Uses labels which are builtin or custom labels.
   - Builtin labels:
     - node.role: manager, worker, etc. (anything which does not start with node.labels)
+    - node.id, node.hostname, node.ip, node.platform.os, node.platform.arch.
   - Custom labels:
     - node.labels.mylabel: myvalue (anything which starts with node.labels)
 - Can be added at create time or add/remove at runtime while updating a service.
@@ -94,6 +99,22 @@ node for a task/container.
     - node labels stored in raft database.
     - engine.labels added in daemon.json. e.g. {"labels": ["dmz=true"]}
 
+#### Placement Preferences
+
+- soft requirements which allows you to spread your tasks across nodes.
+- Can be added at create time or add/remove at runtime while updating a service.
+- helps us ensure our service tasks are spread across data centers.
+
+### Service Modes
+
+- Can only be controlled at service creation time. Types are:
+    - Replicated:
+        - This is the default mode.
+        - This is a good option when more than 1 container can run on same node.
+    - Global:
+        - This mode is useful when you want to make sure that a container is always running on each node.
+        - Metricbeat, datadog agent containers are good use-cases for it.
+        - Whenever we add new node to swarm, containers in a global service will be spread across all nodes which helps auto-scaling.
 
 ### Commands
 
@@ -131,6 +152,12 @@ wait synchronously until all tasks have been executed.
     - ```docker service create --name web --constraint=node.labels.dmz=true nginx:1.13.7```
 - To update a constraint on a service:
     - ```docker service update web --constraint-rm node.role==worker --constraint-add node.role==manager```
+- To add a placement preference to existing service:
+    - ```docker service update web --placement-pref-add=spread=node.labels.zone```
+- To remove a placement preference from existing service:
+    - ```docker service update web --placement-pref-rm=spread=node.labels.zone```
+- To add a placemement preference to a new service:
+    - ```docker service create --name web --placement-pref=spread=node.labels.zone nginx:1.13.7```
 
 #### Docker node commands:
 - To add a label to a node:

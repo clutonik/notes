@@ -4,6 +4,7 @@ services:
   web:
     image: "nginx:3.7"
     deploy:
+      mode: global # This will create a service in global mode i.e. all nodes will have this service
       replicas: 2
       placement:
         constraints:
