@@ -13,6 +13,7 @@ Command to start swarm visualizer:
 
 ## Contents
 
+- [TODO](#todo)
 - [General](#General)
 - [Manager](#Manager)
 - [Worker](#Worker)
@@ -20,6 +21,10 @@ Command to start swarm visualizer:
 - [Stacks](#Stacks)
 - [Container Placement](#container-placement)
 - [Commands](#Commands)
+
+### TODO
+
+- [ ] Check if swarm visualizer is needed to keep an eye on cluster.
 
 ### General
 
@@ -62,6 +67,7 @@ there is another way to deploy or configure interdependent services through stac
 - these docker-compose files should be of version 3 or higher.
 - docker-compose files have different sections for build and deploy. So, for local development/testing
 through docker-compose, docker will skip/neglect deploy: section and similarly docker stack deploy command in production will avoid the build section.
+- Look at [service-constraints-example.yaml](service-constraints-example.yaml) as an example of how to add constraints to a service using a stack file.
 
 ### Container placement
 
@@ -73,6 +79,21 @@ node for a task/container.
     - Placement preferences (soft requirement), useful for spreading out containers based on zones etc.
     - We can change node's availability for new tasks i.e. we can mark a node unavailable for new tasks based on a condition.
     - Resource requirements: We can create a service by specifiying its cpu/memory requirements and the scheduler will know where to place the tasks of that service.
+
+#### Service Constraints
+
+- Uses labels which are builtin or custom labels.
+  - Builtin labels:
+    - node.role: manager, worker, etc. (anything which does not start with node.labels)
+  - Custom labels:
+    - node.labels.mylabel: myvalue (anything which starts with node.labels)
+- Can be added at create time or add/remove at runtime while updating a service.
+- Creates a hard requirement and will fail deployment if constraint can not be matched.
+- Supports either a key only or a key value pair.
+- Lables come from two places:
+    - node labels stored in raft database.
+    - engine.labels added in daemon.json. e.g. {"labels": ["dmz=true"]}
+
 
 ### Commands
 
@@ -105,6 +126,16 @@ wait synchronously until all tasks have been executed.
     - e.g: ```docker service update nginx --replicas 3```
 - To get the join token for adding a node as manager:
     - ```docker swarm join-token manager```
+- To create a service with a constraint:
+    - ```docker service create --name web --constraint=node.role==worker nginx:1.13.7```
+    - ```docker service create --name web --constraint=node.labels.dmz=true nginx:1.13.7```
+- To update a constraint on a service:
+    - ```docker service update web --constraint-rm node.role==worker --constraint-add node.role==manager```
+
+#### Docker node commands:
+- To add a label to a node:
+    - ```docker node update --label-add=dmz=true node2```
+
 
 #### Docker stack commands:
 
